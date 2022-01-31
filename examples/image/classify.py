@@ -8,8 +8,13 @@ import sys, getopt
 import signal
 import time
 from edge_impulse_linux.image import ImageImpulseRunner
+from gpiozero import LED
 
+led = LED(17)
 runner = None
+flag = 1
+Glass = "Glass"
+Plastic = "Plastic"
 # if you don't want to see a camera preview, set this to False
 show_camera = True
 if (sys.platform == 'linux' and not os.environ.get('DISPLAY')):
@@ -106,6 +111,9 @@ def main(argv):
                     print('Result (%d ms.) ' % (res['timing']['dsp'] + res['timing']['classification']), end='')
                     for label in labels:
                         score = res['result']['classification'][label]
+                        if score == flag and label == Plastic:
+                          led.on()
+                          
                         print('%s: %.2f\t' % (label, score), end='')
                     print('', flush=True)
 

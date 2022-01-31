@@ -11,10 +11,9 @@ from edge_impulse_linux.image import ImageImpulseRunner
 from gpiozero import LED
 
 led = LED(17)
+
+
 runner = None
-flag = 1
-Glass = "Glass"
-Plastic = "Plastic"
 # if you don't want to see a camera preview, set this to False
 show_camera = True
 if (sys.platform == 'linux' and not os.environ.get('DISPLAY')):
@@ -106,15 +105,15 @@ def main(argv):
                     time.sleep((next_frame - now()) / 1000)
 
                 # print('classification runner response', res)
-
+                actual_label = "Plastic"
+                acceptable_threshold = 0.8
                 if "classification" in res["result"].keys():
                     print('Result (%d ms.) ' % (res['timing']['dsp'] + res['timing']['classification']), end='')
                     for label in labels:
-                        score = res['result']['classification'][label]
-                        if score == flag and label == Plastic:
-                          led.on()
-                          
-                        print('%s: %.2f\t' % (label, score), end='')
+                       score = res['result']['classification'][label]
+                       if score > acceptable_threshold and label == actual_label:
+                         led.on()
+                       print('%s: %.2f\t' % (label, score), end='')
                     print('', flush=True)
 
                 elif "bounding_boxes" in res["result"].keys():

@@ -7,10 +7,25 @@ import os
 import sys, getopt
 import signal
 import time
+import RPi.GPIO as GPIO
+
+GPIO.setwarnings(False)
+servoPIN = 18
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(servoPIN, GPIO.OUT)
+
+recycle = 3.5
+metal = 5.8
+compost = 8.16
+other = 10.5
+
+
+p = GPIO.PWM(servoPIN, 50) # GPIO 18 for PWM with 50Hz
+p.start(2.5) # Initialization
 from edge_impulse_linux.image import ImageImpulseRunner
 from gpiozero import LED
 
-led = LED(17)
+# led = LED(17)
 
 
 runner = None
@@ -105,14 +120,20 @@ def main(argv):
                     time.sleep((next_frame - now()) / 1000)
 
                 # print('classification runner response', res)
-                actual_label = "Plastic"
+                Recycling = "Recycling"
+                Compost = "Compost"
+                Metal = "Metal"
                 acceptable_threshold = 0.8
                 if "classification" in res["result"].keys():
                     print('Result (%d ms.) ' % (res['timing']['dsp'] + res['timing']['classification']), end='')
                     for label in labels:
                        score = res['result']['classification'][label]
-                       if score > acceptable_threshold and label == actual_label:
-                         led.on()
+                       if score > acceptable_threshold and label == Recycling:
+                          p.ChangeDutyCycle(recycle)
+                       elif score > acceptable_threshold and label == Metal:
+                          p.ChangeDutyCycle(metal)
+                       elif score > acceptable_threshold and label == Compost:
+                          p.ChangeDutyCycle(compost)
                        print('%s: %.2f\t' % (label, score), end='')
                     print('', flush=True)
 

@@ -9,6 +9,7 @@ import signal
 import time
 import RPi.GPIO as GPIO
 
+
 GPIO.setwarnings(False)
 servoPIN = 18
 GPIO.setmode(GPIO.BCM)
@@ -19,6 +20,8 @@ metal = 5.8
 compost = 8.16
 other = 10.5
 
+IR_out = 24
+GPIO.setup(IR_out, GPIO.IN)
 
 p = GPIO.PWM(servoPIN, 50) # GPIO 18 for PWM with 50Hz
 p.start(2.5) # Initialization
@@ -63,6 +66,8 @@ signal.signal(signal.SIGINT, sigint_handler)
 
 def help():
     print('python classify.py <path_to_model.eim> <Camera port ID, only required when more than 1 camera is present>')
+
+
 
 def main(argv):
     try:

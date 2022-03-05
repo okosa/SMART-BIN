@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import device_patches       # Device specific patches for Jetson Nano (needs to be before importing cv2)
 
 import cv2
@@ -8,23 +6,14 @@ import sys, getopt
 import signal
 import time
 import RPi.GPIO as GPIO
+from motor_test import *
 
 
 GPIO.setwarnings(False)
-servoPIN = 18
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(servoPIN, GPIO.OUT)
-
-recycle = 3.5
-metal = 5.8
-compost = 8.16
-other = 10.5
 
 IR_out = 24
 GPIO.setup(IR_out, GPIO.IN)
 
-p = GPIO.PWM(servoPIN, 50) # GPIO 18 for PWM with 50Hz
-p.start(2.5) # Initialization
 from edge_impulse_linux.image import ImageImpulseRunner
 from gpiozero import LED
 
@@ -135,11 +124,14 @@ def main(argv):
                     for label in labels:
                        score = res['result']['classification'][label]
                        if score > acceptable_threshold and label == Recycling:
-                          p.ChangeDutyCycle(recycle)
-                       elif score > acceptable_threshold and label == Metal:
-                          p.ChangeDutyCycle(metal)
-                       elif score > acceptable_threshold and label == Compost:
-                          p.ChangeDutyCycle(compost)
+                          rotate(home, recycle)
+                          time.sleep(3)
+                          rotate(recycle, home)
+                          p.stop()
+                      # elif score > acceptable_threshold and label == Metal:
+                       #   rotate(recycle, metal)
+                       #elif score > acceptable_threshold and label == Compost:
+                        #  rotate(metal, compost)
                        print('%s: %.2f\t' % (label, score), end='')
                     print('', flush=True)
 

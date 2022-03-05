@@ -14,14 +14,14 @@ GPIO.setwarnings(False)
 
 recycle = 3.5
 metal = 5.8
-compost = 8.16
+compost = 8.2
 other = 10.5
  
 
 IR_out = 24
 GPIO.setup(IR_out, GPIO.IN)
  
-p.start(2.5) # Initialization
+p.start(0) # Initialization
 from edge_impulse_linux.image import ImageImpulseRunner
 from gpiozero import LED
  
@@ -162,13 +162,15 @@ def imageProcessing(again, argv):
 def main(argv):
 
     #while True: 
-        #p.ChangeDutyCycle(other)
+        #p.ChangeDutyCycle(2.5) #270 degree of rotation
+        p.ChangeDutyCycle(other) #90 degree of rotation
+        #p.ChangeDutyCycle(10) # degree of rotation
         again = 1
         identify = imageProcessing(again, argv)
         print("\nIdentify:", identify)
-        #rotate(home, identify)
-        #time.sleep(5)
-        #p.ChangeDutyCycle(home)
+        rotate(other, identify)
+        time.sleep(3)
+        rotate(identify, other)
 
  
 

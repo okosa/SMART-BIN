@@ -8,7 +8,10 @@ import sys, getopt
 import signal
 import time
 import RPi.GPIO as GPIO
-from motor_test import * 
+from motor_test import *
+from motor import *
+from send_sms import *
+
  
 GPIO.setwarnings(False)
 
@@ -161,15 +164,26 @@ def imageProcessing(again, argv):
  
 def main(argv):
 
-    #while True: 
-        #p.ChangeDutyCycle(2.5) #270 degree of rotation
-        p.ChangeDutyCycle(other) #90 degree of rotation
-        #p.ChangeDutyCycle(10) # degree of rotation
+    #while True:
+    
+        #go home
+        p.ChangeDutyCycle(other) 
+        
+        #identify subsystem
         again = 1
         identify = imageProcessing(again, argv)
         print("\nIdentify:", identify)
+        
+        #send_text(identify)
+        
+        #rotate to category
         rotate(other, identify)
-        time.sleep(3)
+        
+        #drop garbage
+        tray_open()
+        tray_close()
+        
+        #go home
         rotate(identify, other)
 
  

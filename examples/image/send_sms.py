@@ -9,9 +9,20 @@ client = Client(account_sid, auth_token)
 myTwilioNumber = "+13345390541"
 destCellPhone  = "+14036067666"
 
-myMessage = client.api.account.messages.create(
-    body="whatever",
-    to=destCellPhone, 
-    from_=myTwilioNumber)
+def send_text(message):
+       
+    if message == 3.5:
+        yo = "recycle"
+    elif message == 5.8:
+        yo = "metal"
+    elif message == 8.2:
+        yo = "compost"
+    else:
+        yo = "other"
+    
+    myMessage = client.api.account.messages.create(
+        body=yo,
+        to=destCellPhone, 
+        from_=myTwilioNumber)
 
 

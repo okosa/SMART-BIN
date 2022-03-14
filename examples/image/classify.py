@@ -21,8 +21,15 @@ compost = 8.2
 other = 10.5
  
 
-IR_out = 24
-GPIO.setup(IR_out, GPIO.IN)
+recycle_IR = 24
+metal_IR = 5
+compost_IR = 6
+other_IR = 13
+
+GPIO.setup(recycle_IR, GPIO.IN)
+GPIO.setup(metal_IR, GPIO.IN)
+GPIO.setup(compost_IR, GPIO.IN)
+GPIO.setup(other_IR, GPIO.IN)       
  
 p.start(0) # Initialization
 from edge_impulse_linux.image import ImageImpulseRunner
@@ -121,7 +128,7 @@ def imageProcessing(again, argv):
                 next_frame = 0 # limit to ~10 fps here
      
                 for res, img in runner.classifier(videoCaptureDeviceId):
-#                    if GPIO.input(IR_out) == False:
+#                    
                     if (next_frame > now()):
                         time.sleep((next_frame - now()) / 1000)
      
@@ -162,31 +169,55 @@ def imageProcessing(again, argv):
                 if (runner):
                     runner.stop()
  
+def IRtimer(sensor):
+    
+    counter = 0;
+
+    while GPIO.input(sensor) == False:
+        counter += 1
+        time.sleep(1)
+        if counter == 3:
+            return True
+    
+    return False
+ 
 def main(argv):
 
-    #while True:
-    
+    while True:
+        
+        isRecycleFull = IRtimer(recycle_IR)
+        isMetalFull = IRtimer(metal_IR)
+        isCompostFull = IRtimer(compost_IR)
+        isOtherFull = IRtimer(other_IR)
+                
+        if isRecycleFull == True:
+            send_text(recycle)
+        if isMetalFull == True:
+            send_text(metal)
+        if isCompostFull == True:
+            send_text(compost)
+        if isOtherFull == True:
+            send_text(other)
+        
         #go home
-        p.ChangeDutyCycle(other) 
+        #p.ChangeDutyCycle(other) 
         
         #identify subsystem
-        again = 1
-        identify = imageProcessing(again, argv)
-        print("\nIdentify:", identify)
-        
-        #send_text(identify)
-        
+        #again = 1
+        #identify = imageProcessing(again, argv)
+        #print("\nIdentify:", identify)
+    
         #rotate to category
-        rotate(other, identify)
+        #rotate(other, identify)
         
         #drop garbage
-        tray_open()
-        tray_close()
+        #tray_open()
+        #tray_close()
         
         #go home
-        rotate(identify, other)
-
- 
+        #rotate(identify, other)
+            
+            
 
 if __name__ == "__main__":
    main(sys.argv[1:])

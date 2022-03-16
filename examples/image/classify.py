@@ -196,34 +196,29 @@ def identify2Pin(identify):
         return 6
     if identify == 10.5:
         return 13
+    
+def identify2Word(identify):
+    
+    if identify == 3.5:
+        return "Recycle"
+    if identify == 5.8:
+        return "Compost"
+    if identify == 8.2:
+        return "Metal"
+    if identify == 10.5:
+        return "Other"
  
 
 def main(argv):
 
-    while True:
-         
-        isrecycleFull = IR(recycle_IR)      
-        if isrecycleFull == True:
-            send_text(recycle)
-            
-        ismetalFull = IR(metal_IR)      
-        if ismetalFull == True:
-            send_text(metal)
-            
-        iscompostFull = IR(compost_IR)      
-        if iscompostFull == True:
-            send_text(compost)
-            
-        isotherFull = IR(other_IR)      
-        if isotherFull == True:
-            send_text(other)
+    #while True:
         
         #while infarred == False:
             
             #identify subsystem
-            #again = 1
-            #identify = imageProcessing(again, argv)
-            #print("\nIdentify:", identify)
+            again = 1
+            identify = imageProcessing(again, argv)
+            print("\nIdentify:", identify)
         
             #rotate to category
             #rotate(other, identify)
@@ -236,11 +231,12 @@ def main(argv):
             #rotate(identify, other)
             
             #check if bin is full
-            #isBinFull = IR( identify2Pin(identify) )
+            isBinFull = IR( identify2Pin(identify) )
                     
-            #if isBinFull == True:
-                #send_text(identify)
-            
+            if isBinFull == True:
+                send_text(identify)
+            else:
+                print(identify2Word(identify), "is not full.")
             
 
 if __name__ == "__main__":

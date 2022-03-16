@@ -12,16 +12,16 @@ destCellPhone  = "+14036067666"
 def send_text(message):
        
     if message == 3.5:
-        yo = "recycle"
+        yo = "Recycle"
     elif message == 5.8:
-        yo = "metal"
+        yo = "Metal"
     elif message == 8.2:
-        yo = "compost"
+        yo = "Compost"
     else:
-        yo = "other"
+        yo = "Other"
     
     myMessage = client.api.account.messages.create(
-        body=yo,
+        body=yo + " is full",
         to=destCellPhone, 
         from_=myTwilioNumber)
 

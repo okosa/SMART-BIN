@@ -20,8 +20,8 @@ metal = 5.8
 compost = 8.2
 other = 10.5
  
-
-recycle_IR = 24
+#GPIO pins for infrared
+recycle_IR = 19
 metal_IR = 5
 compost_IR = 6
 other_IR = 13
@@ -29,14 +29,16 @@ other_IR = 13
 GPIO.setup(recycle_IR, GPIO.IN)
 GPIO.setup(metal_IR, GPIO.IN)
 GPIO.setup(compost_IR, GPIO.IN)
-GPIO.setup(other_IR, GPIO.IN)       
+GPIO.setup(other_IR, GPIO.IN)
+
+#go home
+p.ChangeDutyCycle(other)
  
 p.start(0) # Initialization
 from edge_impulse_linux.image import ImageImpulseRunner
 from gpiozero import LED
  
 # led = LED(17)
- 
  
 runner = None
 # if you don't want to see a camera preview, set this to False
@@ -169,53 +171,75 @@ def imageProcessing(again, argv):
                 if (runner):
                     runner.stop()
  
-def IRtimer(sensor):
+def IR(sensorPin):        
+    i = GPIO.input(sensorPin)
     
-    counter = 0;
+    count = 0;
 
-    while GPIO.input(sensor) == False:
-        counter += 1
+    while i == 0:
+        count += 1
         time.sleep(1)
-        if counter == 3:
+        if count >= 3:
             return True
-    
+        i = GPIO.input(sensorPin)
+
     return False
+
+
+def identify2Pin(identify):
+    
+    if identify == 3.5:
+        return 19
+    if identify == 5.8:
+        return 5
+    if identify == 8.2:
+        return 6
+    if identify == 10.5:
+        return 13
  
+
 def main(argv):
 
     while True:
-        
-        isRecycleFull = IRtimer(recycle_IR)
-        isMetalFull = IRtimer(metal_IR)
-        isCompostFull = IRtimer(compost_IR)
-        isOtherFull = IRtimer(other_IR)
-                
-        if isRecycleFull == True:
+         
+        isrecycleFull = IR(recycle_IR)      
+        if isrecycleFull == True:
             send_text(recycle)
-        if isMetalFull == True:
+            
+        ismetalFull = IR(metal_IR)      
+        if ismetalFull == True:
             send_text(metal)
-        if isCompostFull == True:
+            
+        iscompostFull = IR(compost_IR)      
+        if iscompostFull == True:
             send_text(compost)
-        if isOtherFull == True:
+            
+        isotherFull = IR(other_IR)      
+        if isotherFull == True:
             send_text(other)
         
-        #go home
-        #p.ChangeDutyCycle(other) 
+        #while infarred == False:
+            
+            #identify subsystem
+            #again = 1
+            #identify = imageProcessing(again, argv)
+            #print("\nIdentify:", identify)
         
-        #identify subsystem
-        #again = 1
-        #identify = imageProcessing(again, argv)
-        #print("\nIdentify:", identify)
-    
-        #rotate to category
-        #rotate(other, identify)
-        
-        #drop garbage
-        #tray_open()
-        #tray_close()
-        
-        #go home
-        #rotate(identify, other)
+            #rotate to category
+            #rotate(other, identify)
+            
+            #drop garbage
+            #tray_open()
+            #tray_close()
+            
+            #go home
+            #rotate(identify, other)
+            
+            #check if bin is full
+            #isBinFull = IR( identify2Pin(identify) )
+                    
+            #if isBinFull == True:
+                #send_text(identify)
             
             
 

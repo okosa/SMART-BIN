@@ -218,20 +218,20 @@ def main(argv):
             #identify subsystem
             again = 1
             identify = imageProcessing(again, argv)
-            print("\nIdentify:", identify)
+            print("\nIdentify:", identify2Word(identify))
         
             #rotate to category
-            #rotate(other, identify)
+            rotate(other, identify)
             
             #drop garbage
-            #tray_open()
-            #tray_close()
+            tray_open()
+            tray_close()
             
             #go home
-            #rotate(identify, other)
+            rotate(identify, other)
             
             #check if bin is full
-            isBinFull = IR( identify2Pin(identify) )
+            isBinFull = IR(identify2Pin(identify) )
                     
             if isBinFull == True:
                 send_text(identify)

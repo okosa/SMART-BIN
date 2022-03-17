@@ -7,7 +7,7 @@ import RPi.GPIO as GPIO
 from time import sleep
 
 in1 = 17
-in2 = 27
+in2 = 22
 en = 23
 
 import time
@@ -32,10 +32,3 @@ def tray_open():
     q.ChangeDutyCycle(Duty_cycle )
     time.sleep(2)
     
-#while True:
-    #tray_open()
-    #tray_close()
-    
-
-        
-   

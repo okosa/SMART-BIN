@@ -16,4 +16,4 @@ def audio(text):
     
     
 
-audio("Nathan")
+#audio("please let me pass and graduate")

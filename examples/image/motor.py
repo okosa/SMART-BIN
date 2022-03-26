@@ -20,15 +20,15 @@ q = GPIO.PWM(en, 50)
 Duty_cycle = 30
 q.start(2.5)
 
-def tray_close():
+def tray_open():
     GPIO.output(in1, GPIO.HIGH)
     GPIO.output(in2, GPIO.LOW)
     q.ChangeDutyCycle(Duty_cycle)
     time.sleep(2)
 
-def tray_open():
+def tray_close():
     GPIO.output(in1, GPIO.LOW)
     GPIO.output(in2, GPIO.HIGH)
     q.ChangeDutyCycle(Duty_cycle )
     time.sleep(2)
-    
+

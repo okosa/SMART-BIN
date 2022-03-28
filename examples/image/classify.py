@@ -135,7 +135,7 @@ def imageProcessing(again, argv):
                         time.sleep((next_frame - now()) / 1000)
      
                     # print('classification runner response', res)
-                    Recycling = "Recycling"
+                    Recycle = "Recycle"
                     Compost = "Compost"
                     Metal = "Metal"
                     acceptable_threshold = 0.8
@@ -143,7 +143,7 @@ def imageProcessing(again, argv):
                         print('Result (%d ms.) ' % (res['timing']['dsp'] + res['timing']['classification']), end='')
                         for label in labels:
                            score = res['result']['classification'][label]
-                           if score > acceptable_threshold and label == Recycling:
+                           if score > acceptable_threshold and label == Recycle:
                                 again = 0
                                 return recycle
                            elif score > acceptable_threshold and label == Metal:
@@ -208,9 +208,9 @@ def identify2Word(identify):
     
     if identify == 1000:
         return "Recycle"
-    if identify == 2000:
-        return "Compost"
     if identify == 1500:
+        return "Compost"
+    if identify == 2000:
         return "Metal"
     if identify == 500:
         return "Other"
@@ -225,13 +225,13 @@ def main(argv):
             #identify subsystem
             again = 1
             identify = imageProcessing(again, argv)
+            print("\nIdentify:", identify)
             print("\nIdentify:", identify2Word(identify))
             audio(identify2Word(identify))
         
             #rotate to category
             rotate(other, identify)
             
-            time.sleep(1)
             
             #drop garbage
             tray_open()
